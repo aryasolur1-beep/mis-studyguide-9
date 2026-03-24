@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MIS Chapter 9 Study Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0B0E14;
+            --surface: #161B22;
+            --accent: #58A6FF;
+            --text-main: #E6EDF3;
+            --text-dim: #8B949E;
+            --correct: #238636;
+            --wrong: #DA3633;
+            --border: #30363D;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        nav {
+            width: 260px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        nav h1 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+        }
+
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.3s;
+        }
+
+        .nav-btn.active {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        main {
+            margin-left: 260px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .section { display: none; }
+        .section.active { display: block; }
+
+        .search-bar {
+            width: 100%;
+            padding: 1rem;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 2rem;
+        }
+
+        .vocab-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .vocab-card h3 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            display: block;
+            margin-top: 1rem;
+        }
+
+        .example-box {
+            background: rgba(88, 166, 255, 0.05);
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            margin-top: 1rem;
+            font-style: italic;
+        }
+
+        .q-card {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .q-number {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .scenario {
+            line-height: 1.65;
+            margin-bottom: 1rem;
+            color: var(--text-main);
+        }
+
+        .question-line {
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            margin-top: 0.6rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.2s;
+        }
+
+        .option:hover {
+            border-color: var(--accent);
+        }
+
+        .option.correct {
+            background: var(--correct);
+            border-color: var(--correct);
+        }
+
+        .option.wrong {
+            background: var(--wrong);
+            border-color: var(--wrong);
+        }
+
+        .answer-block {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 6px;
+            display: none;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            border: 1px solid var(--border);
+        }
+
+        .answer-block strong {
+            color: var(--accent);
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            main {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+
+            body {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h1>MIS Chapter 9</h1>
+    <button class="nav-btn active" onclick="showTab('vocab', this)">Terms</button>
+    <button class="nav-btn" onclick="showTab('quiz', this)">Practice Quiz</button>
+    <div style="margin-top: 2rem; font-size: 0.8rem; color: var(--text-dim); line-height: 1.5;">
+        Focus: cloud services, SaaS, AWS, SLAs, and consumerization of technology.
+    </div>
+</nav>
+
+<main>
+    <section id="vocab" class="section active">
+        <input type="text" class="search-bar" id="search" placeholder="Search Chapter 9 terms..." onkeyup="filterVocab()">
+        <div id="vocab-container"></div>
+    </section>
+
+    <section id="quiz" class="section">
+        <div id="quiz-container"></div>
+    </section>
+</main>
+
+<script>
+const vocabData = [
+    {
+        term: "Amazon Web Services (AWS)",
+        exact: "A major cloud computing platform that provides on-demand computing, storage, databases, and other technology services over the internet.",
+        simple: "A popular cloud platform that lets companies rent computing services online.",
+        example: "A startup hosts its website and stores data on AWS instead of buying its own servers."
+    },
+    {
+        term: "Cloud computing",
+        exact: "The delivery of computing services such as servers, storage, software, and processing power over the internet rather than through local machines or owned hardware.",
+        simple: "Using internet-based computing resources instead of running everything on your own computer or servers.",
+        example: "A business uses online storage and rented servers instead of maintaining all hardware in-house."
+    },
+    {
+        term: "Consumerization of technology",
+        exact: "The trend in which consumer technologies influence business technology choices because employees expect workplace tools to be as easy and familiar as the apps they use personally.",
+        simple: "When personal tech habits shape what people expect at work.",
+        example: "Employees want simple work apps because they are used to polished consumer apps on their phones."
+    },
+    {
+        term: "Service Level Agreement (SLA)",
+        exact: "A formal agreement that defines the performance standards a service provider promises to deliver, such as uptime, support response time, and reliability.",
+        simple: "A contract that states the service level a provider must meet.",
+        example: "A cloud vendor promises 99.9% uptime in its SLA."
+    },
+    {
+        term: "Software as a Service (SaaS)",
+        exact: "A model in which software is delivered over the internet and accessed through a browser or app, usually by subscription, rather than installed and maintained locally by the customer.",
+        simple: "Software you use online instead of buying and installing on your own computer.",
+        example: "Students using Google Docs in a browser are using SaaS."
+    }
+];
+
+const quizData = [
+    {
+        scenario: "A student startup needs a website, data storage, and computing power, but the founders do not want to buy expensive servers. They decide to rent these services online and pay only for what they use each month. Their professor says this decision reflects a major shift in how firms access technology resources.",
+        question: "Which concept BEST describes the model the startup is using?",
+        options: [
+            "A. SaaS because they are only using software through a browser",
+            "B. Cloud computing because they are renting computing resources over the internet",
+            "C. SLA because they want reliable service from a provider",
+            "D. Consumerization of technology because students prefer simple digital tools"
+        ],
+        correct: 1,
+        explanation: "B is correct because cloud computing means using internet-based computing resources like servers and storage instead of owning all the hardware. A is wrong because SaaS is only one type of cloud-delivered software, while the scenario includes broader computing resources. C is wrong because an SLA is a contract term, not the full computing model. D is wrong because the scenario is about infrastructure choice, not employees bringing consumer expectations into the workplace."
+    },
+    {
+        scenario: "A small online business uses Salesforce and Google Workspace through a browser and pays a subscription fee instead of installing programs on office computers. The owner likes that updates happen automatically and employees can log in from anywhere. She wants a term that specifically describes this software delivery model.",
+        question: "Which concept MOST directly fits this scenario?",
+        options: [
+            "A. AWS because those programs must run on Amazon's servers",
+            "B. Cloud computing because all internet software is the same thing",
+            "C. SaaS because the software is delivered online by subscription",
+            "D. SLA because the vendor promises performance standards"
+        ],
+        correct: 2,
+        explanation: "C is correct because SaaS refers specifically to software delivered online, typically by subscription, with updates handled by the provider. A is wrong because SaaS products do not have to run on AWS specifically. B is too broad because cloud computing includes many services beyond software delivery. D is wrong because an SLA may exist, but it does not define the software model itself."
+    },
+    {
+        scenario: "A campus clothing company stores its site, customer database, and analytics tools on Amazon Web Services. The founders chose it because they could quickly launch services without buying their own physical servers. Their MIS instructor asks them to identify the specific provider they selected, not just the general model.",
+        question: "Which concept should they name?",
+        options: [
+            "A. AWS because it is the cloud platform they are using",
+            "B. Cloud computing because it is the only vendor in the market",
+            "C. SaaS because hosting a website always counts as software delivery",
+            "D. SLA because reliability matters more than the provider name"
+        ],
+        correct: 0,
+        explanation: "A is correct because the question asks for the specific provider, and Amazon Web Services is the named platform in the scenario. B is wrong because cloud computing is the broad model, not the vendor. C is wrong because hosting infrastructure is not the same as simply using SaaS software. D is wrong because an SLA is a service contract, not the company providing the platform."
+    },
+    {
+        scenario: "A business is choosing between two cloud vendors. One vendor is cheaper, but the other promises 99.95% uptime, faster support replies, and credits if service fails to meet those standards. The manager says these written promises matter because the company depends on the software every day.",
+        question: "Which concept BEST describes those written service promises?",
+        options: [
+            "A. SaaS because subscriptions include browser access",
+            "B. Consumerization of technology because users expect simple apps",
+            "C. SLA because it defines required service performance levels",
+            "D. Cloud computing because all remote services include standards"
+        ],
+        correct: 2,
+        explanation: "C is correct because a Service Level Agreement defines measurable performance commitments such as uptime and support response times. A is wrong because SaaS is a delivery model, not the contract language about performance standards. B is wrong because consumerization is about user expectations shaped by personal tech. D is wrong because cloud computing is the overall model, while the written promises are specifically part of an SLA."
+    },
+    {
+        scenario: "Employees at a company complain that the firm's internal travel and expense software is confusing and outdated. They compare it to the polished apps they use on their phones every day and push management to adopt tools that feel easier and more modern. Their manager says personal technology expectations are starting to shape workplace software decisions.",
+        question: "Which concept BEST explains this trend?",
+        options: [
+            "A. AWS because cloud vendors influence business software choices",
+            "B. Consumerization of technology because personal tech expectations affect work systems",
+            "C. SaaS because all easy-to-use software is subscription based",
+            "D. SLA because employees want better performance guarantees"
+        ],
+        correct: 1,
+        explanation: "B is correct because consumerization of technology refers to personal technology shaping what employees expect from business tools. A is wrong because the issue is not specifically about AWS as a provider. C is wrong because ease of use does not automatically mean the software is SaaS. D is wrong because the complaint is about design and user experience, not formal uptime or support guarantees."
+    }
+];
+
+function showTab(id, el) {
+    document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+}
+
+function renderVocab() {
+    const container = document.getElementById('vocab-container');
+    container.innerHTML = vocabData.map(item => `
+        <div class="vocab-card">
+            <h3>${item.term}</h3>
+            <span class="label">Exact Definition</span>
+            <p>${item.exact}</p>
+            <span class="label">Simple Definition</span>
+            <p>${item.simple}</p>
+            <div class="example-box">
+                <span class="label" style="margin-top:0">Example</span>
+                ${item.example}
+            </div>
+        </div>
+    `).join('');
+}
+
+function filterVocab() {
+    const query = document.getElementById('search').value.toLowerCase();
+    const cards = document.querySelectorAll('.vocab-card');
+    cards.forEach(card => {
+        card.style.display = card.innerText.toLowerCase().includes(query) ? 'block' : 'none';
+    });
+}
+
+function renderQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = quizData.map((item, i) => `
+        <div class="q-card" id="q${i}">
+            <div class="q-number">${i + 1}.</div>
+            <p class="scenario">${item.scenario}</p>
+            <p class="question-line">${item.question}</p>
+            ${item.options.map((opt, oi) => `
+                <button class="option" onclick="checkAnswer(${i}, ${oi})">${opt}</button>
+            `).join('')}
+            <div class="answer-block" id="exp${i}">
+                <p><strong>Correct answer:</strong> ${String.fromCharCode(65 + item.correct)}</p>
+                <p><strong>Explanation:</strong> ${item.explanation}</p>
+            </div>
+        </div>
+    `).join('');
+}
+
+function checkAnswer(qIdx, oIdx) {
+    const q = quizData[qIdx];
+    const card = document.getElementById(`q${qIdx}`);
+    const options = card.querySelectorAll('.option');
+    const exp = document.getElementById(`exp${qIdx}`);
+
+    options.forEach(btn => btn.disabled = true);
+
+    if (oIdx === q.correct) {
+        options[oIdx].classList.add('correct');
+        exp.style.background = "rgba(35, 134, 54, 0.12)";
+    } else {
+        options[oIdx].classList.add('wrong');
+        options[q.correct].classList.add('correct');
+        exp.style.background = "rgba(218, 54, 51, 0.12)";
+    }
+
+    exp.style.display = "block";
+}
+
+renderVocab();
+renderQuiz();
+</script>
+
+</body>
+</html>
